@@ -210,6 +210,28 @@ sync-osp.ps1 / .cmd      синхронизация в домен OSPanel (см.
 - При сохранении `.tpl` очищается кэш скомпилированных шаблонов
   (`core/cache/tpl_*.php`).
 
+### Плагины
+
+#### content_types — реестр типов контента (основа для интернет-магазина)
+- Путь: `plugins/content_types/` (`plugin.json` + `init.php`)
+- Регистрирует типы контента с общим интерфейсом (id, slug, title, url, type):
+  - `article` — статьи (таблица `articles`)
+  - `product` — товары (задел под интернет-магазин, таблица `products` +
+    роуты добавятся при создании модуля каталога)
+- Фильтры: `content_types.list`, `content_types.get`, `content_types.has`
+- Другие плагины могут добавлять свои типы через `content_types.list`
+
+#### recently_viewed — недавние просмотры (статьи → товары в будущем)
+- Путь: `plugins/recently_viewed/` (`plugin.json` + `init.php`)
+- Сохраняет в куке `cms_recently_viewed` id просмотренных статей (макс. 10)
+- Отслеживает только статьи (не рубрики), через хук `article.view`
+- Доступ в шаблоне:
+  - Контекст `recently_viewed` — массив статей через `[each recently_viewed as a]...[/each]`
+  - Слот `[slot recently_viewed]` — готовая верстка списка
+- JS-резерв: `localStorage` в слоте `before_end` (работает даже без кук)
+- Готов к товарам: через `content_types` можно добавить отслеживание
+  просмотренных товаров одним плагином
+
 ## 7. Известные мелочи
 
 - При смене url_scheme в настройках: дефолтные роуты (priority<100)
