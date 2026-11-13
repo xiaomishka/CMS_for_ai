@@ -679,24 +679,29 @@ function admin_settings_form(array $s, array $themes, array $schemes): string
 function admin_templates_list(array $themes): string
 {
     $cards = '';
+    $activeTheme = settings('theme', 'default');
     foreach ($themes as $t) {
+        $isActive = $t['name'] === $activeTheme;
         $files = '';
         foreach ($t['files'] as $f) {
-            $files .= '<a class="text-xs text-blue-400 hover:text-blue-300 underline underline-offset-4"'
+            $files .= '<a class="text-xs text-blue-400 hover:text-blue-300 underline underline-offset-4 block"'
                 . ' href="?page=template_edit&theme=' . urlencode($t['name']) . '&file=' . urlencode($f) . '">'
-                . e($f) . '</a> ';
+                . e($f) . '</a>';
         }
-        $cards .= '<div class="rounded-lg border border-blue-800/40 bg-blue-950/50 p-4 mb-4">'
+        $cards .= '<div class="rounded-lg border ' . ($isActive ? 'border-emerald-500/50 bg-emerald-500/5' : 'border-blue-800/40 bg-blue-950/50') . ' p-4 mb-4 cursor-pointer group"'
+            . ' onclick="location.href=\'?page=template_edit&theme=' . urlencode($t['name']) . '&file=' . urlencode($t['files'][0] ?? '') . '\'"'
+            . '>'
             . '<div class="flex items-center justify-between mb-3">'
-            . '<span class="font-semibold text-white">' . e($t['title']) . '</span>'
+            . '<span class="font-semibold text-white group-hover:text-blue-300 transition-colors">' . e($t['title']) . '</span>'
             . '<span class="text-xs text-slate-400 font-mono">/' . e($t['name']) . '/</span>'
             . '</div>'
             . '<p class="text-xs text-slate-500 mb-3">'
-            . ($t['name'] === settings('theme', 'default')
-                ? '<span class="text-emerald-400 font-semibold">активная тема</span>'
+            . ($isActive
+                ? '<span class="text-emerald-400 font-semibold">АКТИВНАЯ ТЕМА</span>'
                 : '<span class="text-slate-400">не активна</span>')
             . '</p>'
-            . '<div class="flex flex-wrap gap-2 text-xs">' . ($files ?: '<span class="text-slate-500">нет редактируемых файлов</span>') . '</div>'
+            . '<div class="flex flex-wrap gap-1 text-xs mb-3">' . ($files ?: '<span class="text-slate-500">нет файлов</span>') . '</div>'
+            . '<div class="text-[10px] text-slate-600 uppercase tracking-wider">Кликните для редактирования</div>'
             . '</div>';
     }
     $content = '<div class="mb-5 flex items-center justify-between"><h1 class="text-xl font-bold text-white">Шаблоны тем</h1>'
@@ -711,6 +716,28 @@ function admin_templates_list(array $themes): string
 
 function admin_template_edit(string $theme, string $themeTitle, string $file, string $content): string
 {
+    $activeTheme = settings('theme', 'default');
+    $isActive = $theme === $activeTheme;
+
+    // Список файлов темы для дерева слева
+    $themeDir = BASE_PATH . '/templates/' . $theme;
+    $fileTree = '';
+    $allowed = ['.tpl', '.phtml', '.json', '.css', '.js'];
+    $files = [];
+    foreach (glob($themeDir . '/*.{tpl,phtml,json,css,js}', GLOB_BRACE) ?: [] as $f) {
+        $files[] = basename($f);
+    }
+    sort($files);
+    foreach ($files as $f) {
+        $isCurrent = $f === $file;
+        $fileTree .= '<a class="block px-3 py-2 text-xs ' . ($isCurrent ? 'bg-blue-600/30 text-blue-300 border-r-2 border-blue-500 font-mono' : 'text-slate-400 hover:text-blue-300 hover:bg-blue-900/30 font-mono') . '"'
+            . ' href="?page=template_edit&theme=' . urlencode($theme) . '&file=' . urlencode($f) . '">'
+            . e($f) . '</a>';
+    }
+    if (!$fileTree) {
+        $fileTree = '<div class="px-3 py-2 text-xs text-slate-500">нет файлов</div>';
+    }
+
     $ace = '<script src="/admin/assets/ace/ace.js" type="text/javascript" charset="utf-8"></script>'
         . '<script src="/admin/assets/ace/ext-language_tools.js" type="text/javascript" charset="utf-8"></script>';
     $mode = 'ace/mode/text';
@@ -726,6 +753,7 @@ function admin_template_edit(string $theme, string $themeTitle, string $file, st
     ];
     $mode = $modeMap[$ext] ?? $mode;
     $initScript = '<script>'
+        . 'ace.config.set("basePath", "/admin/assets/ace");'
         . 'var editor = ace.edit("editor");'
         . 'editor.setTheme("ace/theme/monokai");'
         . 'editor.session.setMode("' . $mode . '");'
@@ -739,25 +767,53 @@ function admin_template_edit(string $theme, string $themeTitle, string $file, st
         . '  useSoftTabs: true'
         . '});'
         . 'editor.session.setValue(' . json_encode($content, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) . ');'
+        . 'editor.focus();'
         . '</script>';
-    $contentHtml = '<h1 class="mb-6 text-xl font-bold text-white">Правка шаблона</h1>'
-        . '<div class="mb-4 flex items-center gap-3 text-sm">'
-        . '<span class="font-mono text-slate-400">templates/</span>'
+    $contentHtml = '<div class="flex flex-col lg:flex-row gap-0 h-full">'
+        . '<div class="hidden lg:flex lg:flex-col lg:w-1/4 border-r border-blue-800/40 bg-blue-950/50 h-screen">'
+        . '<div class="p-4 border-b border-blue-800/40">'
+        . '<div class="text-xs font-bold text-white mb-3">Templates</div>'
+        . '<div class="text-[10px] text-slate-500 mb-3 uppercase tracking-wider">/' . e($theme) . '/' . ($isActive ? ' <span class="text-emerald-400">(активная)</span>' : '') . '</div>'
+        . '<div class="flex items-center gap-2 mb-4">'
+        . '<span class="text-[10px] text-slate-400 font-mono">▾</span>'
+        . '<span class="text-xs font-semibold text-slate-300">Файлы (' . count($files) . ')</span>'
+        . '</div>'
+        . '<div class="space-y-0.5">' . $fileTree . '</div>'
+        . '</div>'
+        . '</div>'
+        . '<div class="flex-1 flex flex-col h-screen">'
+        . '<div class="p-4 border-b border-blue-800/40 bg-blue-950 flex items-center justify-between">'
+        . '<div class="flex items-center gap-2">'
+        . '<span class="text-xs font-mono text-slate-400">templates/</span>'
         . '<span class="font-semibold text-blue-300 font-mono">' . e($theme) . '</span>'
-        . '<span class="text-slate-500">/</span>'
+        . '<span class="text-xs text-slate-500">/</span>'
         . '<span class="font-semibold text-white font-mono">' . e($file) . '</span>'
         . '</div>'
-        . '<form method="post" action="?page=template_save">' . Auth::csrfField()
+        . '<div class="flex items-center gap-2">'
+        . '<a class="text-xs text-slate-400 hover:text-slate-300" href="?page=templates&theme=' . urlencode($theme) . '">Назад к списку тем</a>'
+        . '<a class="text-xs text-blue-400 hover:text-blue-300" href="/" target="_blank">Открыть сайт</a>'
+        . '</div>'
+        . '</div>'
+        . '<form method="post" action="?page=template_save" class="flex-1 flex flex-col min-h-0">' . Auth::csrfField()
         . '<input type="hidden" name="theme" value="' . e($theme) . '">'
         . '<input type="hidden" name="file" value="' . e($file) . '">'
-        . '<div class="rounded-lg border border-blue-800/40 bg-blue-950/50 p-1">'
-        . '<div id="editor" class="h-96 border border-blue-800/40"></div>'
+        . '<div class="flex-1 relative min-h-0 overflow-hidden rounded-lg border border-blue-800/40 bg-blue-950/50 p-1">'
+        . '<div id="editor" class="absolute inset-0 border-0 bg-transparent"></div>'
         . '</div>'
-        . '<div class="mt-4 flex items-center gap-3">'
+        . '<div class="mt-3 flex items-center justify-between">'
         . '<button class="' . admin_btn() . '" type="submit">Сохранить файл</button>'
-        . '<a class="text-sm text-slate-400 hover:text-slate-300" href="?page=templates&theme=' . urlencode($theme) . '">Назад к теме</a>'
-        . '<a class="text-sm text-blue-400 hover:text-blue-300 ml-auto" href="/" target="_blank">Открыть сайт</a>'
+        . '<span class="text-[10px] text-slate-500">Нажмите Ctrl+S для быстрого сохранения</span>'
         . '</div>'
-        . '</form>' . $ace . $initScript;
+        . '</form>'
+        . '</div>'
+        . '</div>' . $ace . $initScript
+        . '<script>'
+        . 'document.addEventListener("keydown", function(e) {'
+        . '  if (e.ctrlKey && e.key === "s") {'
+        . '    e.preventDefault();'
+        . '    document.querySelector("form").submit();'
+        . '  }'
+        . '});'
+        . '</script>';
     return admin_layout($themeTitle . ' · ' . e($file), $contentHtml, 'templates');
 }
