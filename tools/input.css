@@ -1,0 +1,4 @@
+/* Вход для сборки admin/assets/admin.css:
+   tools\tailwindcss.exe -i tools\input.css -o admin\assets\admin.css --minify
+   Классы сканируются автоматически по файлам проекта (v4). */
+@import "tailwindcss";

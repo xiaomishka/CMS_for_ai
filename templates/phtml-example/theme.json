@@ -1,0 +1,7 @@
+{
+    "name": "PHTML Example",
+    "version": "0.1",
+    "engine": "phtml",
+    "slots": ["head", "before_end"],
+    "description": "Пример темы на чистых PHP-шаблонах (режим phtml) для форков."
+}

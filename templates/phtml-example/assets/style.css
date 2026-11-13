@@ -1,0 +1,29 @@
+* { box-sizing: border-box; }
+body { font-family: system-ui, -apple-system, Segoe UI, Arial, sans-serif; margin: 0; color: #222; background: #fff; }
+.container { max-width: 980px; margin: 0 auto; padding: 0 16px; }
+.site-header { border-bottom: 1px solid #ddd; padding: 16px 0; margin-bottom: 24px; }
+.header-inner { display: flex; align-items: center; gap: 24px; }
+.logo { font-weight: 700; font-size: 1.25rem; text-decoration: none; color: #111; }
+.nav a { margin-left: 16px; text-decoration: none; color: #555; }
+.nav a:hover { color: #0a6cff; }
+.layout { display: flex; gap: 32px; }
+.content { flex: 1; }
+.sidebar { width: 280px; }
+.site-footer { border-top: 1px solid #ddd; padding: 24px 0; margin-top: 48px; color: #666; font-size: 0.875rem; }
+.post { margin-bottom: 32px; }
+.post-head { display: flex; gap: 12px; align-items: center; margin-bottom: 8px; font-size: 0.875rem; color: #666; }
+.cat { background: #eee; padding: 2px 8px; border-radius: 4px; text-decoration: none; font-size: 0.8rem; }
+.post-title { font-size: 1.5rem; margin: 0 0 12px; }
+.post-cover { max-width: 100%; height: auto; border-radius: 8px; margin-bottom: 12px; }
+.post-body { line-height: 1.6; }
+.post-item { margin-bottom: 24px; }
+.post-item h2 { font-size: 1.25rem; margin: 0 0 8px; }
+.post-item a { color: #111; text-decoration: none; }
+.post-item a:hover { color: #0a6cff; }
+.backlink { margin-top: 16px; font-size: 0.875rem; color: #666; }
+.page-title { font-size: 2rem; margin-bottom: 16px; }
+.description { color: #555; margin-bottom: 24px; }
+.sidebar-widget { background: #f8f9fa; border: 1px solid #eee; border-radius: 8px; padding: 16px; margin-bottom: 24px; }
+.sidebar-widget h3 { font-size: 1rem; margin-top: 0; margin-bottom: 12px; color: #111; }
+.sidebar-widget ul { list-style: none; padding: 0; margin: 0; }
+.sidebar-widget li { margin-bottom: 8px; }

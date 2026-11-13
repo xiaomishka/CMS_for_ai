@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title><?= $view->e($meta['title'] ?? '') ?></title>
+<?php if (!empty($meta['description'] ?? '')): ?>
+<meta name="description" content="<?= $view->e($meta['description']) ?>">
+<?php endif; ?>
+<link rel="stylesheet" href="/templates/phtml-example/assets/style.css">
+<?= $view->slot('head') ?>
+</head>
+<body>
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="logo" href="/"><?= $view->e($site['name']) ?></a>
+    <nav class="nav">
+      <?php foreach ($nav as $n): ?>
+        <a href="<?= $view->e($n['url']) ?>"><?= $view->e($n['title']) ?></a>
+      <?php endforeach; ?>
+    </nav>
+  </div>
+</header>
+
+<main class="container layout">
+  <div class="content">
+    <?= $view->raw($content) ?>
+  </div>
+  <aside class="sidebar">
+    <?= $view->inc('partial.sidebar') ?>
+  </aside>
+</main>
+
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <span>© <?= $view->e($site['year']) ?> <?= $view->e($site['name']) ?></span>
+    <?php if (!empty($user['logged'])): ?>
+      <a href="/admin/">Админка</a>
+    <?php endif; ?>
+    <span class="hint">Режим phtml — чистые PHP-шаблоны</span>
+  </div>
+</footer>
+<?= $view->slot('before_end') ?>
+</body>
+</html>

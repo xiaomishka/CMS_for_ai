@@ -1,0 +1,14 @@
+# Рантайм-файлы (создаются после установки)
+core/config.php
+core/*.sqlite
+core/*.sqlite-*
+core/cache/
+core/*.log
+install.done.php
+
+# Системное
+Thumbs.db
+.DS_Store
+
+# Сборочный инструмент Tailwind (admin/assets/admin.css — входит в пакет)
+tools/tailwindcss.exe

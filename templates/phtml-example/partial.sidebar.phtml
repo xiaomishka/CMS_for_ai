@@ -1,0 +1,8 @@
+<div class="sidebar-widget">
+  <h3>Последние статьи</h3>
+  <ul>
+  <?php foreach ($recent as $r): ?>
+    <li><a href="<?= $v->e($r['url']) ?>"><?= $v->e($r['title']) ?></a></li>
+  <?php endforeach; ?>
+  </ul>
+</div>

@@ -1,0 +1,23 @@
+<h1 class="page-title"><?= $view->e($meta['title'] ?? $site['name']) ?></h1>
+
+<?php if (empty($articles)): ?>
+<p>Пока нет статей. Создайте первую в админке.</p>
+<?php else: ?>
+<?php foreach ($articles as $a): ?>
+<article class="post-item">
+  <h2><a href="<?= $view->e($a['url']) ?>"><?= $view->e($a['title']) ?></a></h2>
+  <?php if (!empty($a['cover'])): ?>
+    <img class="post-cover" src="<?= $view->e($a['cover']) ?>" alt="<?= $view->e($a['title']) ?>">
+  <?php endif; ?>
+  <p><?= $view->e($a['short']) ?></p>
+  <time><?= $view->e(date('d.m.Y', strtotime($a['date'] ?? ''))) ?></time>
+</article>
+<?php endforeach; ?>
+
+<?php if (!empty($pagination['prev_url'])): ?>
+<a href="<?= $view->e($pagination['prev_url']) ?>">‹ Назад</a>
+<?php endif; ?>
+<?php if (!empty($pagination['next_url'])): ?>
+<a href="<?= $view->e($pagination['next_url']) ?>">Вперед ›</a>
+<?php endif; ?>
+<?php endif; ?>

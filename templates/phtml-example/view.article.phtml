@@ -1,0 +1,20 @@
+<article class="post">
+  <div class="post-head">
+    <?php if (!empty($article['category'])): ?>
+      <a class="cat" href="<?= $view->e($article['category']['url']) ?>"><?= $view->e($article['category']['title']) ?></a>
+    <?php endif; ?>
+    <time class="date"><?= $view->e(date('d.m.Y', strtotime($article['date'] ?? ''))) ?></time>
+  </div>
+  <h1 class="post-title"><?= $view->e($article['title']) ?></h1>
+  <?php if (!empty($article['cover'])): ?>
+    <img class="post-cover" src="<?= $view->e($article['cover']) ?>" alt="<?= $view->e($article['title']) ?>">
+  <?php endif; ?>
+  <div class="post-body">
+    <?= $view->raw($article['full']) ?>
+  </div>
+</article>
+<?php if (!empty($article['category'])): ?>
+<p class="backlink"><a href="<?= $view->e($article['category']['url']) ?>">← <?= $view->e($article['category']['title']) ?></a></p>
+<?php else: ?>
+<p class="backlink"><a href="/">← На главную</a></p>
+<?php endif; ?>

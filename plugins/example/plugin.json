@@ -1,0 +1,6 @@
+{
+    "name": "example",
+    "version": "0.1.0",
+    "description": "Пример плагина: выводит мета-тег генератора в слот [slot head] темы.",
+    "hooks": ["template.slot:head"]
+}

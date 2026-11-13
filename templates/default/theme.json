@@ -1,0 +1,7 @@
+{
+    "name": "Default",
+    "version": "0.1",
+    "engine": "tpl",
+    "slots": ["head", "before_end"],
+    "description": "Базовая тема CMS. Демонстрирует все теги шаблонизатора."
+}
