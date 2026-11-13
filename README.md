@@ -1,6 +1,6 @@
 # CMS_for_ai — легковесная CMS для статейников
 
-Alpha **0.2**. PHP 8.1+, RedBeanPHP (без composer), MySQL или SQLite.
+**v1.1**. PHP 8.1+, RedBeanPHP (без composer), MySQL или SQLite.
 Главная фишка — быстрая адаптация любого HTML-шаблона силами ИИ
 (папка `templates/<имя>/`, теговый шаблонизатор `*.tpl`, спецификация в `agents.md`).
 
@@ -24,7 +24,7 @@ Alpha **0.2**. PHP 8.1+, RedBeanPHP (без composer), MySQL или SQLite.
 
 ## Changelog v
 
-### v1.1 (в разработке)
+### v1.1 (готово)
 - **TinyMCE** (локально, `admin/assets/tinymce/`) — визуальный редактор для полей
   `short`/`full` статьи и `content` страницы в админке (без CDN, все ресурсы
   локально).

@@ -124,7 +124,7 @@ function admin_layout(string $title, string $content, string $active = ''): stri
         . '<aside class="flex w-60 shrink-0 flex-col bg-blue-950/80 border-r border-blue-800/50">'
         . '<div class="border-b border-blue-800/50 px-5 py-4">'
         . '<div class="truncate text-sm font-bold text-white">' . e($siteName) . '</div>'
-        . '<div class="mt-0.5 text-xs text-slate-400">админ-панель · v0.2</div></div>'
+        . '<div class="mt-0.5 text-xs text-slate-400">админ-панель · v1.1</div></div>'
         . '<nav class="flex-1 space-y-1 overflow-y-auto px-3 py-4">' . $nav . '</nav>'
         . '<div class="border-t border-blue-800/50 px-5 py-4 text-xs text-slate-400">'
         . '<div class="truncate font-semibold text-slate-300">' . e($user['name'] ?? '') . '</div>'
@@ -190,7 +190,7 @@ function admin_dashboard(array $stats): string
 
     $content = '<h1 class="mb-6 text-xl font-bold text-white">Обзор</h1>' . $tiles . $quick
         . '<div class="rounded-lg border border-blue-800/40 bg-blue-950/50 p-5">'
-        . '<p class="text-xs text-slate-500">v0.2 alpha — статьи, рубрики, статические страницы, пользователи и роли, '
+        . '<p class="text-xs text-slate-500">v1.1 — статьи, рубрики, статические страницы, пользователи и роли, '
         . '301-редиректы с логом 404, RSS и sitemap. Медиазагрузка и плагины — в следующих версиях.</p></div>';
     return admin_layout('Обзор', $content, 'dashboard');
 }
