@@ -189,13 +189,14 @@ sync-osp.ps1 / .cmd      синхронизация в домен OSPanel (см.
 
 ## Новые возможности (после v1.0)
 
-### TinyMCE (локальный WYSIWYG-редактор)
-- Подключён локально: `admin/assets/tinymce/` (tinymce.min.js + skin oxide + иконки).
+### Hugerte (локальный WYSIWYG-редактор)
+- Подключён локально: `admin/assets/hugerte/` (hugerte.min.js + skin oxide + иконки).
+- Форк TinyMCE под MIT-лицензией — не требует API-ключа и внешних запросов.
 - Используется в формах: «Новая/правка статьи» (поля `short` и `full`) и
   «Новая/правка страницы» (поле `content`).
-- Инициализация: `tinymce.init({selector: "textarea.tinymce", ...})` с базовым
+- Инициализация: `hugerte.init({selector: "textarea.hugerte", ...})` с базовым
   набором плагинов (lists, link, image, media, code).
-- Путь к ресурсам задан через `tinymce.baseURL = "/admin/assets/tinymce"` —
+- Путь к ресурсам задан через `hugerte.baseURL = "/admin/assets/hugerte"` —
   работает без CDN и без внешних запросов.
 
 ### Редактор шаблонов (ACE)

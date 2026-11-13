@@ -249,13 +249,13 @@ function admin_article_form(array $cats, array $article, bool $isNew): string
     }
     $delete = $isNew ? '' : ' <a class="' . admin_btn('danger') . '" href="?page=article_delete&id=' . (int)$article['id']
         . '" onclick="return confirm(\'Удалить статью?\')">Удалить</a>';
-    $tinymce = '<script src="/admin/assets/tinymce/tinymce.min.js"></script>'
+    $hugerte = '<script src="/admin/assets/hugerte/hugerte.min.js"></script>'
         . '<script>'
-        . 'tinymce.baseURL = "/admin/assets/tinymce";'
-        . 'tinymce.init({'
-        . 'selector: "textarea.tinymce",'
+        . 'hugerte.baseURL = "/admin/assets/hugerte";'
+        . 'hugerte.init({'
+        . 'selector: "textarea.hugerte",'
         . 'skin: "oxide",'
-        . 'content_css: "/admin/assets/tinymce/skins/content/default/content.min.css",'
+        . 'content_css: "/admin/assets/hugerte/skins/content/default/content.min.css",'
         . 'toolbar: "undo redo | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image media | blockquote code",'
         . 'plugins: "lists link image media code",'
         . 'branding: false,'
@@ -272,8 +272,8 @@ function admin_article_form(array $cats, array $article, bool $isNew): string
         . '<div>' . admin_label('Статус') . '<select name="status" class="' . admin_input() . '">' . $statusOptions . '</select></div>'
         . '<div>' . admin_label('Дата публикации') . '<input type="datetime-local" name="published_at" class="' . admin_input() . '" value="' . e($article['published_at']) . '"></div>'
         . '</div>'
-        . '<div class="mb-4">' . admin_label('Короткое описание (анонс)') . '<textarea name="short" rows="3" class="tinymce ' . admin_input() . ' resize-y">' . e($article['short']) . '</textarea></div>'
-        . '<div class="mb-4">' . admin_label('Полный текст (HTML)') . '<textarea name="full" rows="14" class="tinymce ' . admin_input() . ' font-mono resize-y">' . e($article['full']) . '</textarea></div>'
+        . '<div class="mb-4">' . admin_label('Короткое описание (анонс)') . '<textarea name="short" rows="3" class="hugerte ' . admin_input() . ' resize-y">' . e($article['short']) . '</textarea></div>'
+        . '<div class="mb-4">' . admin_label('Полный текст (HTML)') . '<textarea name="full" rows="14" class="hugerte ' . admin_input() . ' font-mono resize-y">' . e($article['full']) . '</textarea></div>'
         . '<div class="mb-4 grid grid-cols-2 gap-x-4">'
         . '<div>' . admin_label('Обложка (URL картинки)') . '<input type="text" name="cover" id="cover" class="' . admin_input() . '" value="' . e($article['cover']) . '"><button type="button" class="mt-2 ' . admin_btn('ghost') . ' px-3 py-2 text-xs" onclick="window.open(\'?page=media\', \'media\', \'width=900,height=700\')">из медиатеки</button></div>'
         . '<div>' . admin_label('SEO title') . '<input type="text" name="meta_title" class="' . admin_input() . '" value="' . e($article['meta_title']) . '"></div>'
@@ -282,7 +282,7 @@ function admin_article_form(array $cats, array $article, bool $isNew): string
         . '<div class="flex flex-wrap items-center gap-3">'
         . '<button class="' . admin_btn() . '" type="submit">Сохранить</button>' . $delete
         . '<a class="text-sm text-slate-400 hover:text-slate-300" href="/" target="_blank">Открыть сайт</a>'
-        . '</div></div></form>' . $tinymce;
+        . '</div></div></form>' . $hugerte;
     return admin_layout($isNew ? 'Новая статья' : 'Правка статьи', $content, 'articles');
 }
 
@@ -439,13 +439,13 @@ function admin_page_form(array $page, bool $isNew): string
     }
     $delete = $isNew ? '' : ' <a class="' . admin_btn('danger') . '" href="?page=page_delete&id=' . (int)$page['id']
         . '" onclick="return confirm(\'Удалить страницу?\')">Удалить</a>';
-    $tinymce = '<script src="/admin/assets/tinymce/tinymce.min.js"></script>'
+    $hugerte = '<script src="/admin/assets/hugerte/hugerte.min.js"></script>'
         . '<script>'
-        . 'tinymce.baseURL = "/admin/assets/tinymce";'
-        . 'tinymce.init({'
-        . 'selector: "textarea.tinymce",'
+        . 'hugerte.baseURL = "/admin/assets/hugerte";'
+        . 'hugerte.init({'
+        . 'selector: "textarea.hugerte",'
         . 'skin: "oxide",'
-        . 'content_css: "/admin/assets/tinymce/skins/content/default/content.min.css",'
+        . 'content_css: "/admin/assets/hugerte/skins/content/default/content.min.css",'
         . 'toolbar: "undo redo | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image media | blockquote code",'
         . 'plugins: "lists link image media code",'
         . 'branding: false,'
@@ -460,7 +460,7 @@ function admin_page_form(array $page, bool $isNew): string
         . '<div>' . admin_label('URL (slug)', 'пусто = из заголовка') . '<input type="text" name="slug" class="' . admin_input() . '" value="' . e($page['slug']) . '"></div>'
         . '<div>' . admin_label('Статус') . '<select name="status" class="' . admin_input() . '">' . $statusOptions . '</select></div>'
         . '</div>'
-        . '<div class="mb-4">' . admin_label('Контент (HTML)') . '<textarea name="content" rows="12" class="tinymce ' . admin_input() . ' font-mono resize-y">' . e($page['content']) . '</textarea></div>'
+        . '<div class="mb-4">' . admin_label('Контент (HTML)') . '<textarea name="content" rows="12" class="hugerte ' . admin_input() . ' font-mono resize-y">' . e($page['content']) . '</textarea></div>'
         . '<div class="mb-4 grid grid-cols-2 gap-x-4">'
         . '<div>' . admin_label('SEO title') . '<input type="text" name="meta_title" class="' . admin_input() . '" value="' . e($page['meta_title']) . '"></div>'
         . '<div>' . admin_label('SEO description') . '<input type="text" name="meta_description" class="' . admin_input() . '" value="' . e($page['meta_description']) . '"></div>'
@@ -468,7 +468,7 @@ function admin_page_form(array $page, bool $isNew): string
         . '<div class="flex flex-wrap items-center gap-3">'
         . '<button class="' . admin_btn() . '" type="submit">Сохранить</button>' . $delete
         . ($isNew ? '' : '<a class="text-sm text-slate-400 hover:text-slate-300" href="' . e(url_page($page['slug'])) . '" target="_blank">Открыть на сайте</a>')
-        . '</div></div></form>' . $tinymce;
+        . '</div></div></form>' . $hugerte;
     return admin_layout($isNew ? 'Новая страница' : 'Правка страницы', $content, 'pages');
 }
 
