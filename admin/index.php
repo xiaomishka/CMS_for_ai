@@ -7,6 +7,7 @@
  *           users|user_edit|user_save|user_delete|
  *           redirects|redirect_edit|redirect_save|redirect_delete|
  *           notfound|settings|settings_save
+ *           templates|template_edit|template_save
  */
 
 declare(strict_types=1);
@@ -874,6 +875,112 @@ switch ($page) {
             "<?php\nreturn " . var_export($cfg, true) . ";\n", LOCK_EX);
         Auth::flash('Настройки сохранены');
         redirect('/admin/?page=settings');
+
+    /* ── Редактирование шаблонов темы (ACE) ────────────────────── */
+    case 'templates':
+        if (!Auth::can('templates.manage')) {
+            Auth::flash('Недостаточно прав', 'err');
+            redirect('/admin/');
+        }
+        $themes = [];
+        foreach (glob(BASE_PATH . '/templates/*', GLOB_ONLYDIR) ?: [] as $dir) {
+            $name = basename($dir);
+            $metaFile = $dir . '/theme.json';
+            $meta = [];
+            if (is_file($metaFile)) {
+                $meta = json_decode((string)file_get_contents($metaFile), true) ?: [];
+            }
+            $files = [];
+            foreach (glob($dir . '/*.{tpl,phtml,json,css,js}', GLOB_BRACE) ?: [] as $f) {
+                $files[] = basename($f);
+            }
+            sort($files);
+            $themes[] = [
+                'name'  => $name,
+                'title' => $meta['name'] ?? $name,
+                'files' => $files,
+            ];
+        }
+        usort($themes, fn($a, $b) => strcmp($a['name'], $b['name']));
+        exit(admin_templates_list($themes));
+
+    case 'template_edit':
+        if (!Auth::can('templates.manage')) {
+            Auth::flash('Недостаточно прав', 'err');
+            redirect('/admin/');
+        }
+        $theme = basename((string)($_GET['theme'] ?? ''));
+        $file  = basename((string)($_GET['file'] ?? ''));
+        if ($theme === '' || $file === '') {
+            Auth::flash('Не указаны тема и файл', 'err');
+            redirect('/admin/?page=templates');
+        }
+        $themeDir = BASE_PATH . '/templates/' . $theme;
+        $target   = realpath($themeDir . '/' . $file);
+        if (!$target || strpos($target, realpath($themeDir) . '/') !== 0) {
+            Auth::flash('Недопустимый путь к файлу', 'err');
+            redirect('/admin/?page=templates');
+        }
+        if (!is_file($target)) {
+            Auth::flash('Файл не найден', 'err');
+            redirect('/admin/?page=templates');
+        }
+        $allowed = ['.tpl', '.phtml', '.json', '.css', '.js'];
+        $ext = strtolower(pathinfo($target, PATHINFO_EXTENSION));
+        if (!in_array('.' . $ext, $allowed, true)) {
+            Auth::flash('Недопустимый тип файла', 'err');
+            redirect('/admin/?page=templates');
+        }
+        $content = (string)file_get_contents($target);
+        $metaFile = $themeDir . '/theme.json';
+        $themeTitle = $theme;
+        if (is_file($metaFile)) {
+            $meta = json_decode((string)file_get_contents($metaFile), true) ?: [];
+            $themeTitle = $meta['name'] ?? $theme;
+        }
+        exit(admin_template_edit($theme, $themeTitle, $file, $content));
+
+    case 'template_save':
+        if (!Auth::can('templates.manage')) {
+            Auth::flash('Недостаточно прав', 'err');
+            redirect('/admin/');
+        }
+        $theme = basename((string)($_POST['theme'] ?? ''));
+        $file  = basename((string)($_POST['file'] ?? ''));
+        $data  = (string)($_POST['data'] ?? '');
+        if ($theme === '' || $file === '') {
+            Auth::flash('Не указаны тема и файл', 'err');
+            redirect('/admin/?page=templates');
+        }
+        $themeDir = BASE_PATH . '/templates/' . $theme;
+        $target   = realpath($themeDir . '/' . $file);
+        if (!$target || strpos($target, realpath($themeDir) . '/') !== 0) {
+            Auth::flash('Недопустимый путь к файлу', 'err');
+            redirect('/admin/?page=templates');
+        }
+        if (!is_file($target)) {
+            Auth::flash('Файл не найден', 'err');
+            redirect('/admin/?page=templates');
+        }
+        $allowed = ['.tpl', '.phtml', '.json', '.css', '.js'];
+        $ext = strtolower(pathinfo($target, PATHINFO_EXTENSION));
+        if (!in_array('.' . $ext, $allowed, true)) {
+            Auth::flash('Недопустимый тип файла', 'err');
+            redirect('/admin/?page=templates');
+        }
+        if (file_put_contents($target, $data, LOCK_EX) === false) {
+            Auth::flash('Не удалось сохранить файл', 'err');
+        } else {
+            // Инвалидируем кэш скомпилированных шаблонов
+            $cacheDir = BASE_PATH . '/core/cache';
+            if (is_dir($cacheDir)) {
+                foreach (glob($cacheDir . '/tpl_*.php') ?: [] as $cf) {
+                    @unlink($cf);
+                }
+            }
+            Auth::flash('Файл сохранён: ' . $theme . '/' . $file);
+        }
+        redirect('/admin/?page=templates&theme=' . urlencode($theme));
 
     default:
         redirect('/admin/?page=dashboard');

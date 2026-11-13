@@ -90,6 +90,9 @@ function admin_layout(string $title, string $content, string $active = ''): stri
     if (Auth::can('settings.manage')) {
         $menu['settings'] = ['Настройки', '?page=settings', 'settings.manage'];
     }
+    if (Auth::can('templates.manage')) {
+        $menu['templates'] = ['Шаблоны', '?page=templates', 'templates.manage'];
+    }
     if (Auth::can('plugins.manage')) {
         $menu['plugins'] = ['Плагины', '?page=plugins', 'plugins.manage'];
     }
@@ -246,6 +249,19 @@ function admin_article_form(array $cats, array $article, bool $isNew): string
     }
     $delete = $isNew ? '' : ' <a class="' . admin_btn('danger') . '" href="?page=article_delete&id=' . (int)$article['id']
         . '" onclick="return confirm(\'Удалить статью?\')">Удалить</a>';
+    $tinymce = '<script src="/admin/assets/tinymce/tinymce.min.js"></script>'
+        . '<script>'
+        . 'tinymce.baseURL = "/admin/assets/tinymce";'
+        . 'tinymce.init({'
+        . 'selector: "textarea.tinymce",'
+        . 'skin: "oxide",'
+        . 'content_css: "/admin/assets/tinymce/skins/content/default/content.min.css",'
+        . 'toolbar: "undo redo | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image media | blockquote code",'
+        . 'plugins: "lists link image media code",'
+        . 'branding: false,'
+        . 'height: 400,'
+        . '});'
+        . '</script>';
     $content = '<h1 class="mb-6 text-xl font-bold text-white">' . ($isNew ? 'Новая статья' : 'Правка статьи') . '</h1>'
         . '<form method="post" action="?page=article_save&id=' . (int)$article['id'] . '">' . Auth::csrfField()
         . '<div class="rounded-lg border border-blue-800/40 bg-blue-950/50 p-5">'
@@ -256,8 +272,8 @@ function admin_article_form(array $cats, array $article, bool $isNew): string
         . '<div>' . admin_label('Статус') . '<select name="status" class="' . admin_input() . '">' . $statusOptions . '</select></div>'
         . '<div>' . admin_label('Дата публикации') . '<input type="datetime-local" name="published_at" class="' . admin_input() . '" value="' . e($article['published_at']) . '"></div>'
         . '</div>'
-        . '<div class="mb-4">' . admin_label('Короткое описание (анонс)') . '<textarea name="short" rows="3" class="' . admin_input() . ' resize-y">' . e($article['short']) . '</textarea></div>'
-        . '<div class="mb-4">' . admin_label('Полный текст (HTML)') . '<textarea name="full" rows="14" class="' . admin_input() . ' font-mono resize-y">' . e($article['full']) . '</textarea></div>'
+        . '<div class="mb-4">' . admin_label('Короткое описание (анонс)') . '<textarea name="short" rows="3" class="tinymce ' . admin_input() . ' resize-y">' . e($article['short']) . '</textarea></div>'
+        . '<div class="mb-4">' . admin_label('Полный текст (HTML)') . '<textarea name="full" rows="14" class="tinymce ' . admin_input() . ' font-mono resize-y">' . e($article['full']) . '</textarea></div>'
         . '<div class="mb-4 grid grid-cols-2 gap-x-4">'
         . '<div>' . admin_label('Обложка (URL картинки)') . '<input type="text" name="cover" id="cover" class="' . admin_input() . '" value="' . e($article['cover']) . '"><button type="button" class="mt-2 ' . admin_btn('ghost') . ' px-3 py-2 text-xs" onclick="window.open(\'?page=media\', \'media\', \'width=900,height=700\')">из медиатеки</button></div>'
         . '<div>' . admin_label('SEO title') . '<input type="text" name="meta_title" class="' . admin_input() . '" value="' . e($article['meta_title']) . '"></div>'
@@ -266,7 +282,7 @@ function admin_article_form(array $cats, array $article, bool $isNew): string
         . '<div class="flex flex-wrap items-center gap-3">'
         . '<button class="' . admin_btn() . '" type="submit">Сохранить</button>' . $delete
         . '<a class="text-sm text-slate-400 hover:text-slate-300" href="/" target="_blank">Открыть сайт</a>'
-        . '</div></div></form>';
+        . '</div></div></form>' . $tinymce;
     return admin_layout($isNew ? 'Новая статья' : 'Правка статьи', $content, 'articles');
 }
 
@@ -423,6 +439,19 @@ function admin_page_form(array $page, bool $isNew): string
     }
     $delete = $isNew ? '' : ' <a class="' . admin_btn('danger') . '" href="?page=page_delete&id=' . (int)$page['id']
         . '" onclick="return confirm(\'Удалить страницу?\')">Удалить</a>';
+    $tinymce = '<script src="/admin/assets/tinymce/tinymce.min.js"></script>'
+        . '<script>'
+        . 'tinymce.baseURL = "/admin/assets/tinymce";'
+        . 'tinymce.init({'
+        . 'selector: "textarea.tinymce",'
+        . 'skin: "oxide",'
+        . 'content_css: "/admin/assets/tinymce/skins/content/default/content.min.css",'
+        . 'toolbar: "undo redo | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image media | blockquote code",'
+        . 'plugins: "lists link image media code",'
+        . 'branding: false,'
+        . 'height: 400,'
+        . '});'
+        . '</script>';
     $content = '<h1 class="mb-6 text-xl font-bold text-white">' . ($isNew ? 'Новая страница' : 'Правка страницы') . '</h1>'
         . '<form method="post" action="?page=page_save&id=' . (int)$page['id'] . '">' . Auth::csrfField()
         . '<div class="rounded-lg border border-blue-800/40 bg-blue-950/50 p-5">'
@@ -431,7 +460,7 @@ function admin_page_form(array $page, bool $isNew): string
         . '<div>' . admin_label('URL (slug)', 'пусто = из заголовка') . '<input type="text" name="slug" class="' . admin_input() . '" value="' . e($page['slug']) . '"></div>'
         . '<div>' . admin_label('Статус') . '<select name="status" class="' . admin_input() . '">' . $statusOptions . '</select></div>'
         . '</div>'
-        . '<div class="mb-4">' . admin_label('Контент (HTML)') . '<textarea name="content" rows="12" class="' . admin_input() . ' font-mono resize-y">' . e($page['content']) . '</textarea></div>'
+        . '<div class="mb-4">' . admin_label('Контент (HTML)') . '<textarea name="content" rows="12" class="tinymce ' . admin_input() . ' font-mono resize-y">' . e($page['content']) . '</textarea></div>'
         . '<div class="mb-4 grid grid-cols-2 gap-x-4">'
         . '<div>' . admin_label('SEO title') . '<input type="text" name="meta_title" class="' . admin_input() . '" value="' . e($page['meta_title']) . '"></div>'
         . '<div>' . admin_label('SEO description') . '<input type="text" name="meta_description" class="' . admin_input() . '" value="' . e($page['meta_description']) . '"></div>'
@@ -439,7 +468,7 @@ function admin_page_form(array $page, bool $isNew): string
         . '<div class="flex flex-wrap items-center gap-3">'
         . '<button class="' . admin_btn() . '" type="submit">Сохранить</button>' . $delete
         . ($isNew ? '' : '<a class="text-sm text-slate-400 hover:text-slate-300" href="' . e(url_page($page['slug'])) . '" target="_blank">Открыть на сайте</a>')
-        . '</div></div></form>';
+        . '</div></div></form>' . $tinymce;
     return admin_layout($isNew ? 'Новая страница' : 'Правка страницы', $content, 'pages');
 }
 
@@ -643,4 +672,92 @@ function admin_settings_form(array $s, array $themes, array $schemes): string
         . '<button class="' . admin_btn() . '" type="submit">Сохранить</button>'
         . '</div></form>';
     return admin_layout('Настройки', $content, 'settings');
+}
+
+/* ── Редактирование шаблонов (ACE) ─────────────────────────────── */
+
+function admin_templates_list(array $themes): string
+{
+    $cards = '';
+    foreach ($themes as $t) {
+        $files = '';
+        foreach ($t['files'] as $f) {
+            $files .= '<a class="text-xs text-blue-400 hover:text-blue-300 underline underline-offset-4"'
+                . ' href="?page=template_edit&theme=' . urlencode($t['name']) . '&file=' . urlencode($f) . '">'
+                . e($f) . '</a> ';
+        }
+        $cards .= '<div class="rounded-lg border border-blue-800/40 bg-blue-950/50 p-4 mb-4">'
+            . '<div class="flex items-center justify-between mb-3">'
+            . '<span class="font-semibold text-white">' . e($t['title']) . '</span>'
+            . '<span class="text-xs text-slate-400 font-mono">/' . e($t['name']) . '/</span>'
+            . '</div>'
+            . '<p class="text-xs text-slate-500 mb-3">'
+            . ($t['name'] === settings('theme', 'default')
+                ? '<span class="text-emerald-400 font-semibold">активная тема</span>'
+                : '<span class="text-slate-400">не активна</span>')
+            . '</p>'
+            . '<div class="flex flex-wrap gap-2 text-xs">' . ($files ?: '<span class="text-slate-500">нет редактируемых файлов</span>') . '</div>'
+            . '</div>';
+    }
+    $content = '<div class="mb-5 flex items-center justify-between"><h1 class="text-xl font-bold text-white">Шаблоны тем</h1>'
+        . '<p class="text-xs text-slate-500">Редактируйте файлы тем прямо из админки — без FTP. '
+        . 'Доступны активные и неактивные темы.</p></div>'
+        . '<div class="space-y-3">' . ($cards ?: '<div class="rounded-lg border border-blue-800/40 bg-blue-950/50 p-5 text-sm text-slate-500">Темы не найдены.</div>') . '</div>'
+        . '<div class="mt-6 rounded-lg border border-blue-800/40 bg-blue-950/50 p-4 text-xs text-slate-500">'
+        . 'Разрешенные типы файлов: <code>.tpl</code>, <code>.phtml</code>, <code>.json</code>, <code>.css</code>, <code>.js</code>. '
+        . 'Изменения в .tpl вступают в силу сразу (кэш шаблонов очищается при сохранении).</div>';
+    return admin_layout('Шаблоны тем', $content, 'templates');
+}
+
+function admin_template_edit(string $theme, string $themeTitle, string $file, string $content): string
+{
+    $ace = '<script src="/admin/assets/ace/ace.js" type="text/javascript" charset="utf-8"></script>'
+        . '<script src="/admin/assets/ace/ext-language_tools.js" type="text/javascript" charset="utf-8"></script>';
+    $mode = 'ace/mode/text';
+    $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+    $modeMap = [
+        'tpl'  => 'ace/mode/html',
+        'phtml'=> 'ace/mode/php',
+        'html' => 'ace/mode/html',
+        'css'  => 'ace/mode/css',
+        'js'   => 'ace/mode/javascript',
+        'json' => 'ace/mode/json',
+        'php'  => 'ace/mode/php',
+    ];
+    $mode = $modeMap[$ext] ?? $mode;
+    $initScript = '<script>'
+        . 'var editor = ace.edit("editor");'
+        . 'editor.setTheme("ace/theme/monokai");'
+        . 'editor.session.setMode("' . $mode . '");'
+        . 'editor.setOptions({'
+        . '  enableBasicAutocompletion: true,'
+        . '  enableLiveAutocompletion: true,'
+        . '  enableSnippets: true,'
+        . '  showPrintMargin: false,'
+        . '  fontSize: "13px",'
+        . '  tabSize: 2,'
+        . '  useSoftTabs: true'
+        . '});'
+        . 'editor.session.setValue(' . json_encode($content, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) . ');'
+        . '</script>';
+    $contentHtml = '<h1 class="mb-6 text-xl font-bold text-white">Правка шаблона</h1>'
+        . '<div class="mb-4 flex items-center gap-3 text-sm">'
+        . '<span class="font-mono text-slate-400">templates/</span>'
+        . '<span class="font-semibold text-blue-300 font-mono">' . e($theme) . '</span>'
+        . '<span class="text-slate-500">/</span>'
+        . '<span class="font-semibold text-white font-mono">' . e($file) . '</span>'
+        . '</div>'
+        . '<form method="post" action="?page=template_save">' . Auth::csrfField()
+        . '<input type="hidden" name="theme" value="' . e($theme) . '">'
+        . '<input type="hidden" name="file" value="' . e($file) . '">'
+        . '<div class="rounded-lg border border-blue-800/40 bg-blue-950/50 p-1">'
+        . '<div id="editor" class="h-96 border border-blue-800/40"></div>'
+        . '</div>'
+        . '<div class="mt-4 flex items-center gap-3">'
+        . '<button class="' . admin_btn() . '" type="submit">Сохранить файл</button>'
+        . '<a class="text-sm text-slate-400 hover:text-slate-300" href="?page=templates&theme=' . urlencode($theme) . '">Назад к теме</a>'
+        . '<a class="text-sm text-blue-400 hover:text-blue-300 ml-auto" href="/" target="_blank">Открыть сайт</a>'
+        . '</div>'
+        . '</form>' . $ace . $initScript;
+    return admin_layout($themeTitle . ' · ' . e($file), $contentHtml, 'templates');
 }

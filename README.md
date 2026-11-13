@@ -153,3 +153,9 @@ tools\tailwindcss.exe -i tools\input.css -o admin\assets\admin.css --minify
 
 - **v0.3** ✅ — медиазагрузка (uploads/ + attachments, вставка URL обложки), плагины в UI, phtml-режим (тема-пример)
 - **v1.0** ✅ — `agents.md`, тема-пример `templates/ai-adapted/`, автотесты `core/tests/`
+- **v1.1** (в разработке):
+  - **TinyMCE** (локально, `admin/assets/tinymce/`) — визуальный редактор для полей
+    `short`/`full` статьи и `content` страницы в админке;
+  - **Редактор шаблонов** (ACE, `admin/assets/ace/`) — раздел «Шаблоны тем»
+    (`?page=templates`), редактирование любых файлов тем (активных и неактивных)
+    без FTP, право `templates.manage` (только admin).

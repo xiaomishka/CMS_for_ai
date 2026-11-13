@@ -3,6 +3,11 @@
 > Файл для ИИ-агента, продолжающего разработку. Читай целиком перед первым действием.
 > Основные проектные документы: `ARCHITECTURE.md` (архитектура), `README.md` (пользователю).
 
+## 0. Правило работы с изменениями
+
+Если что-то добавлено или изменено — коммитим и пушим. Нет отдельного файла с правилами
+в репозитории, это Odewahn принятое правило команды: **добавили → пушим**.
+
 ## 1. Проект
 
 **CMS_for_ai** — легковесная CMS для статейников. PHP 8.1+ + RedBeanPHP 5.7.6
@@ -78,7 +83,8 @@ engine/
 templates/default/       тема-образец (engine tpl): layout, view.*, list.*, partial.*, 404, 500
 templates/phtml-example/ тема-пример (engine phtml): layout.phtml, view.*.phtml, partial.*, 404, 500, assets/
 admin/index.php          админка: ?page=login|dashboard|articles|...|pages|users|
-                         redirects|notfound|settings|media|plugins|plugins_toggle
+                         redirects|notfound|settings|media|plugins|plugins_toggle|
+                         templates|template_edit|template_save
                          (см. шапку файла)
 admin/includes/views.php вьюхи админки (чистый PHP + классы Tailwind)
 admin/assets/admin.css   локальный Tailwind (сборка: tools/tailwindcss.exe, §Tailwind в README)
@@ -165,6 +171,29 @@ sync-osp.ps1 / .cmd      синхронизация в домен OSPanel (см.
 Внимание к phtml-шаблонам: внутри включаемого через `$view->inc()` файла
 доступна переменная `$v` (экземпляр `PhtmlView`), а не `$view` (см.
 `engine/View.php:PhtmlView::inc`).
+
+## Новые возможности (после v1.0)
+
+### TinyMCE (локальный WYSIWYG-редактор)
+- Подключён локально: `admin/assets/tinymce/` (tinymce.min.js + skin oxide + иконки).
+- Используется в формах: «Новая/правка статьи» (поля `short` и `full`) и
+  «Новая/правка страницы» (поле `content`).
+- Инициализация: `tinymce.init({selector: "textarea.tinymce", ...})` с базовым
+  набором плагинов (lists, link, image, media, code).
+- Путь к ресурсам задан через `tinymce.baseURL = "/admin/assets/tinymce"` —
+  работает без CDN и без внешних запросов.
+
+### Редактор шаблонов (ACE)
+- Новый раздел админки: `?page=templates` — список всех тем с файлами.
+- Доступны активные и неактивные темы (редактирование без FTP).
+- Редактор: `?page=template_edit&theme=<имя>&file=<файл>` с ACE editor
+  (локально: `admin/assets/ace/`), подсветка синтаксиса по расширению.
+- Сохранение: `?page=template_save` (POST, CSRF, право `templates.manage`).
+- Право `templates.manage` — только роль `admin` (см. `Permissions.php`).
+- Допустимые расширения: `.tpl`, `.phtml`, `.json`, `.css`, `.js`.
+- Защита от обхода путей: `realpath()` проверяет, что файл внутри папки темы.
+- При сохранении `.tpl` очищается кэш скомпилированных шаблонов
+  (`core/cache/tpl_*.php`).
 
 ## 7. Известные мелочи
 

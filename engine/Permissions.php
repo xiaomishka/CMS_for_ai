@@ -26,6 +26,7 @@ final class Permissions
         'users.manage'        => ['admin'],
         'plugins.manage'      => ['admin'],
         'media.manage'        => ['admin', 'editor'],
+        'templates.manage'    => ['admin'],
     ];
 
     public static function can(?string $role, string $perm): bool
