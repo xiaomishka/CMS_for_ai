@@ -47,6 +47,16 @@ Alpha **0.2**. PHP 8.1+, RedBeanPHP (без composer), MySQL или SQLite.
 - **phtml-режим**: тема-пример `templates/phtml-example/` на чистых PHP-
   шаблонах (движок `PhtmlView`, режим выбирается в `theme.json`).
 
+## Новое в v1.0
+
+- **agents.md** — спецификация для ИИ-адаптации любого HTML-шаблона: карта
+  файлов темы, реестр тегов `.tpl`, правила адаптации, режим вебархива, правила
+  кода ядра.
+- **Тема-пример адаптации** — `templates/ai-adapted/` показывает, как адаптировать
+  готовый HTML-шаблон силами ИИ (движок `tpl`).
+- **Автотесты** — `core/tests/run.php` (65 тестов, без composer): Permissions,
+  Helpers, Router, Template, Database. Запуск: `php core/tests/run.php`.
+
 ## Структура
 
 ```
@@ -142,4 +152,4 @@ tools\tailwindcss.exe -i tools\input.css -o admin\assets\admin.css --minify
 ## Roadmap
 
 - **v0.3** ✅ — медиазагрузка (uploads/ + attachments, вставка URL обложки), плагины в UI, phtml-режим (тема-пример)
-- **v1.0** — `agents.md` + пример ИИ-адаптации HTML-шаблона
+- **v1.0** ✅ — `agents.md`, тема-пример `templates/ai-adapted/`, автотесты `core/tests/`

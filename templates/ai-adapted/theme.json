@@ -1,0 +1,7 @@
+{
+    "name": "AI Adapted",
+    "version": "1.0",
+    "engine": "tpl",
+    "slots": ["head", "before_end"],
+    "description": "Пример адаптации готового HTML-шаблона силами ИИ (см. agents.md)"
+}

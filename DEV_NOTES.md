@@ -21,6 +21,10 @@
 плагина `plugins/example/`); phtml-режим (тема-пример `templates/phtml-example/`
 на чистых PHP-шаблонах).
 
+**v1.0 готова**: `agents.md` — спецификация для ИИ-адаптации HTML-шаблонов;
+тема-пример `templates/ai-adapted/` — пример адаптации готового HTML-шаблона
+силами ИИ; набор автотестов в `core/tests/` (65 тестов, без composer).
+
 ## 2. Железные правила (нарушать нельзя)
 
 1. **Никакого composer**. Всё подключается require/require_once.
@@ -81,6 +85,9 @@ admin/assets/admin.css   локальный Tailwind (сборка: tools/tailwi
 tools/input.css          вход сборки Tailwind (exe в git не входит)
 core/rb.php              RedBeanPHP 5.7.6 (пропатчен)
 plugins/example/         пример плагина (plugin.json + init.php, хук template.slot:head)
+templates/ai-adapted/    пример адаптированной HTML-темы (engine tpl, см. agents.md)
+agents.md                спецификация для ИИ-адаптации HTML-шаблонов
+core/tests/              автотесты ядра (запуск: php core/tests/run.php)
 sync-osp.ps1 / .cmd      синхронизация в домен OSPanel (см. §4)
 ```
 
@@ -128,7 +135,7 @@ sync-osp.ps1 / .cmd      синхронизация в домен OSPanel (см.
    `sync-osp.ps1`, он чистит рантайм и вернёт install.php) и повторить sync.
 10. Ошибки смотреть в `core/php-error.log` домена.
 
-## 6. Roadmap (выполнено v0.3)
+## 6. Roadmap (выполнено v0.3, v1.0)
 
 **v0.2 готова** (роли/пользователи, страницы, редиректы + 404-лог, RSS/sitemap,
 тёмно-синяя админка на локальном Tailwind).
@@ -144,6 +151,16 @@ sync-osp.ps1 / .cmd      синхронизация в домен OSPanel (см.
    (admin), пример плагина `plugins/example/` (хук `template.slot:head`).
 3. **phtml-режим**: тема-пример `templates/phtml-example/` на чистых PHP-
    шаблонах (движок `PhtmlView` встроен, режим выбирается в `theme.json`).
+
+**v1.0 готова**:
+
+4. **agents.md** — спецификация для ИИ-адаптации HTML-шаблонов (карта файлов
+   темы, реестр тегов tpl-движка, правила адаптации, режим вебархива, правила
+   кода ядра).
+5. **Тема-пример адаптации** — `templates/ai-adapted/` demonstrates how to
+   adapt a ready-made HTML theme using the tpl engine.
+6. **Автотесты** — `core/tests/run.php` (65 тестов, без composer):
+   Permissions, Helpers, Router, Template, Database.
 
 Внимание к phtml-шаблонам: внутри включаемого через `$view->inc()` файла
 доступна переменная `$v` (экземпляр `PhtmlView`), а не `$view` (см.

@@ -198,12 +198,16 @@ final class Template
                     $code = '$__list = \\Template::val($ctx, ' . var_export($node->list, true) . ");\n";
                     $code .= 'if (is_array($__list) || $__list instanceof Traversable) {' . "\n";
                     $code .= "\t\$__n = 0;\n";
+                    $code .= "\t\$__empty = true;\n";
                     $code .= "\tforeach (\$__list as \$__k => \$__item) {" . "\n";
+                    $code .= "\t\t\$__empty = false;\n";
                     $code .= "\t\t\$ctx[" . var_export($node->var, true) . '] = is_array($__item) ? $__item : ($__item instanceof ArrayAccess ? $__item : null);' . "\n";
                     $code .= "\t\t\$__n++;\n";
                     $code .= "\t\t\$ctx['index'] = \$__n - 1;\n";
                     $code .= self::emitChildren($node->children);
-                    $code .= "\t}\n\tunset(\$ctx[" . var_export($node->var, true) . '], $ctx[\'index\']);' . "\n";
+                    $code .= "\t}\n";
+                    $code .= "\tif (\$__empty) {" . "\n" . self::emitChildren($node->else) . "\n\t}\n";
+                    $code .= "\tunset(\$ctx[" . var_export($node->var, true) . '], $ctx[\'index\']);' . "\n";
                     $code .= '} else {' . "\n" . self::emitChildren($node->else) . "}\n";
                     $out .= $code;
                     break;
