@@ -1,0 +1,6 @@
+{
+    "name": "recently_viewed",
+    "version": "1.1.0",
+    "description": "Сохраняет в браузере просмотренные статьи и выводит их в шаблоне через контекст recently_viewed и слот [slot recently_viewed]. Только статьи (не рубрики). Готов к товарам через content_types.",
+    "hooks": ["article.view", "template.context", "template.slot:recently_viewed", "template.slot:before_end"]
+}

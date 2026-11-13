@@ -1,0 +1,6 @@
+{
+    "name": "content_types",
+    "version": "1.1.0",
+    "description": "Реестр типов контента: статьи и задел под товары (интернет-магазин). Единый интерфейс для любой сущности (id, slug, title, url, type).",
+    "hooks": ["content_types.list", "content_types.get", "content_types.has"]
+}
