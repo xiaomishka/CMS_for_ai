@@ -1,6 +1,6 @@
 # CMS_for_ai — легковесная CMS для статейников
 
-**v1.1**. PHP 8.1+, RedBeanPHP (без composer), MySQL или SQLite.
+**v1.11**. PHP 8.1+, RedBeanPHP (без composer), MySQL или SQLite.
 Главная фишка — быстрая адаптация любого HTML-шаблона силами ИИ
 (папка `templates/<имя>/`, теговый шаблонизатор `*.tpl`, спецификация в `agents.md`).
 
@@ -24,13 +24,21 @@
 
 ## Changelog v
 
-### v1.1 (готово)
+### v1.11 (готово)
 - **TinyMCE** (локально, `admin/assets/tinymce/`) — визуальный редактор для полей
   `short`/`full` статьи и `content` страницы в админке (без CDN, все ресурсы
   локально).
 - **Редактор шаблонов** (ACE, `admin/assets/ace/`) — раздел «Шаблоны тем»
   (`?page=templates`), редактирование любых файлов тем (активных и неактивных)
   без FTP, право `templates.manage` (только admin).
+- **Плагин content_types** (`plugins/content_types/`) — реестр типов контента:
+  `article` (статьи) и `product` (задел под интернет-магазин). Единый интерфейс
+  (id, slug, title, url, type) для любой сущности. Фильтры:
+  `content_types.list`, `content_types.get`, `content_types.has`.
+- **Плагин recently_viewed** (`plugins/recently_viewed/`) — недавние просмотры
+  статей в браузере (куки + localStorage). Вывод в шаблоне через контекст
+  `recently_viewed` и слот `[slot recently_viewed]`. Только статьи, не рубрики.
+  Готов к товарам через `content_types`.
 
 ### v1.0
 - **agents.md** — спецификация для ИИ-адаптации любого HTML-шаблона: карта
