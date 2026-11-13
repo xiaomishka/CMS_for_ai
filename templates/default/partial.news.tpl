@@ -9,5 +9,5 @@
     <time class="date">{{ a.date|date:"d.m.Y" }}</time>
   </div>
   <h2 class="card-title"><a href="{{ a.url }}">{{ a.title }}</a></h2>
-  [if a.short]<p class="card-text">{{ a.short|truncate:"180" }}</p>[/if]
+  [if a.short]<p class="card-text">{{ a.short|truncate:"180|raw }}</p>[/if]
 </article>
