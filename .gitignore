@@ -12,3 +12,14 @@ Thumbs.db
 
 # Сборочный инструмент Tailwind (admin/assets/admin.css — входит в пакет)
 tools/tailwindcss.exe
+
+# Пользовательские темы (создаются адаптацией HTML-шаблонов) не попадают в git.
+# В репозитории поставляются только встроенные темы: default, ai-adapted, phtml-example.
+/templates/*
+!/templates/default/
+!/templates/ai-adapted/
+!/templates/phtml-example/
+
+# Пользовательские загрузки (медиафайлы из админки) не попадают в git.
+/uploads/*
+!/uploads/.htaccess
